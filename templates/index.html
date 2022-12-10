@@ -19,13 +19,18 @@
         <input type="submit" value="Upload" />
     </form>
 
+
+    <br>
+    <br>
+    <br>
     <h2>Files</h2>
 
     <table>
-        <thead>
+        <thead id="table_head">
           <tr>
+            <th>File#</th>
             <th>Filename</th>
-            <th>Size</th>
+            <!-- <th>Size</th> -->
             <th>Download</th>
             <th>Delete</th>
           </tr>
@@ -33,15 +38,29 @@
         <tbody>
           {% for file in files %}
           <tr>
+            <td>{{ file[0] }}</td>
             <td>{{ file[1] }}</td>
-            <td>{{ file[2] }}</td>
-            <td><a href="{{ url_for('download_file', filename=file[1]) }}">Download</a></td>
+            <!-- <td>{{ file[2] }}</td>  provides size -->
+            
+            <td><a href="{{ url_for('download_file', filename=file[1]) }}">Download</a></td> 
+            
+            <!-- <td>
+                <a href="{{ url_for('download_file', filename=file[1]) }}">
+                    <img src="icon.png" alt="Download" width="32" height="32">
+                </a>
+            </td>  -->
+            
             <td>
               <form action="{{ url_for('delete_file') }}" method="POST">
-                <input type="hidden" name="filename" value="{{ file[1] }}" />
-                <input type="submit" value="Delete" />
+                <input type="hidden" name="fileid" value="{{ file[0] }}" />
+
+                <input type="submit" value="Delete" id="delete_button" />
+
+
+
               </form>
             </td>
+
           </tr>
           {% endfor %}
         </tbody>
@@ -53,7 +72,7 @@
 
     {% if files %}
         <form action="{{ url_for('delete_all_file') }}" method="POST">
-          <input type="submit" value="DELETE ALL" onclick="return confirm('Are you sure you want to delete all items?');" />
+          <input type="submit" value="DELETE ALL" id="delete_all_button" onclick="return confirm('Are you sure you want to delete all items?');"  />
         </form>
     {% endif %}
 

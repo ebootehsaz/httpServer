@@ -38,8 +38,8 @@ def index():
             # This ID will be used as the id value for the record, and it will be unique for each record in the table.
             # https://dev.mysql.com/doc/mysql-tutorial-excerpt/5.7/en/example-auto-increment.html
 
+            # cursor = c.execute("INSERT INTO files (id, name, size) VALUES (id INTEGER PRIMARY KEY AUTOINCREMENT, ?, ?)", (id, filename, os.path.getsize(os.path.join(UPLOAD_FOLDER, filename)))) 
             cursor = c.execute("INSERT INTO files (name, size) VALUES (?, ?)", (filename, os.path.getsize(os.path.join(UPLOAD_FOLDER, filename)))) 
-            file_id = cursor.lastrowid
 
             conn.commit()
             conn.close()
@@ -69,32 +69,21 @@ def home():
 @app.route("/delete", methods=["POST"])
 def delete_file():
     # Get filename from form data
-    filename = request.form.get("filename")
-    print("Delete: ", filename)
+    fileID = request.form.get("fileid")
+    print("Delete: ", fileID)
     
-
     # Delete file from database
     conn = sqlite3.connect("files.db")
     c = conn.cursor()
-    file_id = c.execute("SELECT id FROM files WHERE name = ?", (filename,)).fetchone()[0]
+    # file_id = c.execute("SELECT id FROM files WHERE name = ?", (fileID,))
     # c.execute("DELETE FROM files WHERE name = ?", (filename,))
-    c.execute("DELETE FROM files WHERE id = ?", (file_id,))
+    c.execute("DELETE FROM files WHERE id = ?", (fileID,))
 
     conn.commit()
     conn.close()
 
     # Redirect back to index page
     return redirect(url_for("home"))
-
-
-@app.route("/download/<filename>")
-def download_file(filename):
-    # Check if file exists
-    if os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)):
-        # Send file as response
-        return send_file(os.path.join(UPLOAD_FOLDER, filename))
-
-    return "File not found"
 
 
 
@@ -109,6 +98,15 @@ def delete_all_file():
     # Redirect back to index page
     return redirect(url_for("index"))
 
+
+@app.route("/download/<filename>")
+def download_file(filename):
+    # Check if file exists
+    if os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)):
+        # Send file as response
+        return send_file(os.path.join(UPLOAD_FOLDER, filename))
+
+    return "File not found"
 
 
 if __name__ == "__main__":
