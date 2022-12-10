@@ -1,0 +1,152 @@
+@media only screen and (max-width: 600px) {
+    /* styles to apply when the screen width is less than 600px */
+    body {
+      font-size: 12px;
+    }
+    table {
+      width: 0%; /* reduce the width of the table */
+    }
+  }
+
+
+  @media only screen and (max-width: 600px) {
+    @viewport {
+      width: device-width;
+      initial-scale: 1.0;
+    }
+  }
+
+
+
+  /* Portrait and Landscape */
+@media only screen 
+and (min-device-width: 375px) 
+and (max-device-width: 812px) 
+and (-webkit-min-device-pixel-ratio: 3) { 
+
+}
+
+/* Portrait */
+@media only screen 
+and (min-device-width: 375px) 
+and (max-device-width: 812px) 
+and (-webkit-min-device-pixel-ratio: 3)
+and (orientation: portrait) { 
+
+}
+
+/* Landscape */
+@media only screen 
+and (min-device-width: 375px) 
+and (max-device-width: 812px) 
+and (-webkit-min-device-pixel-ratio: 3)
+and (orientation: landscape) { 
+
+}
+
+
+
+
+
+  
+    
+
+body{
+    font-family: Arial, sans-serif;
+    background-color: #0d1116;
+    color: white;
+    height: 100vh;
+    /* margin: 30px; */
+}
+
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    
+    /* border-collapse: separate;  */
+}
+
+th, td {
+    text-align: left;
+    padding: 10px;
+    width: 200px; /* increase the width of the cells */
+    
+}
+
+a{
+    color: white;
+}
+
+a:hover {
+    color: green;
+}
+
+/* #table_head {
+    border: 1px solid #0d1116 !important;
+} */
+  
+th {
+    background-color: #5686f5; 
+    /* #161b22 */
+    color: white;
+    border: 1px solid #5686f5 !important;
+
+}
+
+tr {
+    border: 1px solid #0d1116;
+
+}
+
+tr:hover {
+    background-color: #242a31 !important;
+    border: 1px solid #e9e9e9;
+    
+}
+
+
+
+
+
+tr:nth-child(even) {
+    background-color: #191e27;
+    /* border: 1px solid white; */
+}
+
+#delete_button {
+    background-color: #5686f5;  /* red background */
+    color: #ffffff;
+    border-radius: 5%;
+}
+
+#delete_button:hover {
+    background-color: #ff0000;  /* red background */
+}
+
+#delete_all_button {
+    background-color: #5686f5;  /* red background */
+    color: #ffffff;
+    margin:  24px;          /* 24px left margin */
+    padding: 10px;
+    border-radius: 5%;
+}
+
+#delete_all_button:hover {
+    background-color: #ff0000;  /* red background */
+}
+
+
+form {
+    display: inline-block;
+}
+
+  
+
+
+

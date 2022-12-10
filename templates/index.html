@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>File Upload and Download</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+<body>
+    <h1>File Upload, List, Delete, and Download</h1>
+
+    
+    <h2>Upload a file</h2>
+
+    <form action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" id="file" />
+        <input type="submit" value="Upload" />
+    </form>
+
+
+    <br>
+    <br>
+    <br>
+    <h2>Files</h2>
+
+    <table>
+        <thead id="table_head">
+          <tr>
+            <th>File#</th>
+            <th>Filename</th>
+            <!-- <th>Size</th> -->
+            <th>Download</th>
+            <th>Delete</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for file in files %}
+          <tr>
+            <td>{{ file[0] }}</td>
+            <td>{{ file[1] }}</td>
+            <!-- <td>{{ file[2] }}</td>  provides size -->
+            
+            <td><a href="{{ url_for('download_file', filename=file[1]) }}">Download</a></td> 
+            
+            <!-- <td>
+                <a href="{{ url_for('download_file', filename=file[1]) }}">
+                    <img src="icon.png" alt="Download" width="42" height="32">
+                </a>
+            </td>  -->
+            
+            <td>
+              <form action="{{ url_for('delete_file') }}" method="POST">
+                <input type="hidden" name="fileid" value="{{ file[0] }}" />
+
+                <input type="submit" value="Delete" id="delete_button" />
+
+
+
+              </form>
+            </td>
+
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      
+    {% if not files %}
+        <p>There are no files to display.</p>
+    {% endif %}
+
+    {% if files %}
+        <form action="{{ url_for('delete_all_file') }}" method="POST">
+          <input type="submit" value="DELETE ALL" id="delete_all_button" onclick="return confirm('Are you sure you want to delete all items?');"  />
+        </form>
+    {% endif %}
+
+    
+
+    
+
+</body>
+</html>
+
