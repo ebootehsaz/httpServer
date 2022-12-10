@@ -6,3 +6,5 @@ Uses Python, Flask, sqlite3, HTML5, CSS.
 https://readthedocs.org/projects/flask-dev/downloads/pdf/latest/
 https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
 https://flask.palletsprojects.com/en/1.1.x/patterns/sqlite3/
+
+![alt text](page.png)

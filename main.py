@@ -13,7 +13,7 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/uploads", methods=["GET", "POST"])
 def index():
     if request.method == "POST":
         if "file" not in request.files:
@@ -37,14 +37,14 @@ def index():
             conn.commit()
             conn.close()
 
-            return home()
+            return redirect(url_for("home"))
 
         return "Invalid file"
     # else get
 
-    return home()
+    return redirect(url_for("home"))
 
-# @app.route("/uploads", methods=["GET", "POST"])
+@app.route("/", methods=["GET"])
 def home():
         # Retrieve information about all files from database
     conn = sqlite3.connect("files.db")
@@ -73,7 +73,7 @@ def delete_file():
     conn.close()
 
     # Redirect back to index page
-    return redirect(url_for("index"))
+    return redirect(url_for("home"))
 
 
 @app.route("/download/<filename>")
