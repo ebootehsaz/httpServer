@@ -15,6 +15,7 @@ def allowed_file(filename):
 
 @app.route("/uploads", methods=["GET", "POST"])
 def index():
+    print("/upload index(), request: ", request.method)
     if request.method == "POST":
         if "file" not in request.files:
             return "No file part"
@@ -101,6 +102,7 @@ def delete_all_file():
 
 @app.route("/download/<filename>")
 def download_file(filename):
+    print("/download ")
     # Check if file exists
     if os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)):
         # Send file as response

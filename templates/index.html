@@ -13,7 +13,9 @@
 <body>
     <h1>File Upload, List, Delete, and Download</h1>
 
+    
     <h2>Upload a file</h2>
+
     <form action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data">
         <input type="file" name="file" id="file" />
         <input type="submit" value="Upload" />
@@ -46,7 +48,7 @@
             
             <!-- <td>
                 <a href="{{ url_for('download_file', filename=file[1]) }}">
-                    <img src="icon.png" alt="Download" width="32" height="32">
+                    <img src="icon.png" alt="Download" width="42" height="32">
                 </a>
             </td>  -->
             

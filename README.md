@@ -11,4 +11,4 @@ https://dev.mysql.com/doc/mysql-tutorial-excerpt/5.7/en/example-auto-increment.h
 
 <br>
 ### Preview
-![alt text](attributes/page.png)
+![alt text](page.png)
