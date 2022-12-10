@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, send_file, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
 import sqlite3
+import socket
 
 UPLOAD_FOLDER = "./uploads"
 ALLOWED_EXTENSIONS = {"txt", "pdf", "png", "jpg", "jpeg"}
@@ -100,4 +101,15 @@ def delete_all_file():
 
 
 if __name__ == "__main__":
-    app.run()
+    # Get hostname
+    hostname = socket.gethostname()
+
+    # Get IP address
+    ip_address = socket.gethostbyname(hostname)
+
+    #function may return the loopback address (127.0.0.1) 
+    # if your device is not connected to a network. 
+    # In this case, you will not be able to use this IP address to make your program accessible to other devices on the local network.
+
+    app.run(host=ip_address)
+    
