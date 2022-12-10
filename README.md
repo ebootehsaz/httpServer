@@ -8,8 +8,5 @@ https://flask.palletsprojects.com/en/1.1.x/patterns/fileuploads/
 https://flask.palletsprojects.com/en/1.1.x/patterns/sqlite3/
 https://dev.mysql.com/doc/mysql-tutorial-excerpt/5.7/en/example-auto-increment.html
 
-
-<br>
-### Preview
-Looks like this:
+### Preview 
 ![alt text](/Users/ethan/Desktop/VSCode project manage/httpServer/page.png)
