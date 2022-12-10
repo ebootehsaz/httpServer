@@ -33,7 +33,14 @@ def index():
             # Store file information in database
             conn = sqlite3.connect("files.db")
             c = conn.cursor()
-            c.execute("INSERT INTO files (name, size) VALUES (?, ?)", (filename, os.path.getsize(os.path.join(UPLOAD_FOLDER, filename))))
+
+            # the AUTOINCREMENT property in the CREATE TABLE statement will automatically generate a unique, sequential ID for the record. 
+            # This ID will be used as the id value for the record, and it will be unique for each record in the table.
+            # https://dev.mysql.com/doc/mysql-tutorial-excerpt/5.7/en/example-auto-increment.html
+
+            cursor = c.execute("INSERT INTO files (name, size) VALUES (?, ?)", (filename, os.path.getsize(os.path.join(UPLOAD_FOLDER, filename)))) 
+            file_id = cursor.lastrowid
+
             conn.commit()
             conn.close()
 
@@ -49,7 +56,7 @@ def home():
         # Retrieve information about all files from database
     conn = sqlite3.connect("files.db")
     c = conn.cursor()
-    c.execute("CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY, name TEXT, size INTEGER)")
+    c.execute("CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, size INTEGER)") #AUTOINCREMENT
     c.execute("SELECT * FROM files")
     files = c.fetchall()
     # print("num files:", files.__sizeof__())
@@ -64,11 +71,15 @@ def delete_file():
     # Get filename from form data
     filename = request.form.get("filename")
     print("Delete: ", filename)
+    
 
     # Delete file from database
     conn = sqlite3.connect("files.db")
     c = conn.cursor()
-    c.execute("DELETE FROM files WHERE name = ?", (filename,))
+    file_id = c.execute("SELECT id FROM files WHERE name = ?", (filename,)).fetchone()[0]
+    # c.execute("DELETE FROM files WHERE name = ?", (filename,))
+    c.execute("DELETE FROM files WHERE id = ?", (file_id,))
+
     conn.commit()
     conn.close()
 
