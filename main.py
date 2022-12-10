@@ -52,7 +52,7 @@ def home():
     c.execute("CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY, name TEXT, size INTEGER)")
     c.execute("SELECT * FROM files")
     files = c.fetchall()
-    print("num files:", files.__sizeof__())
+    # print("num files:", files.__sizeof__())
     conn.close()
 
     # Render index.html template, passing the list of files as a variable

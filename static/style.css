@@ -1,25 +1,21 @@
+@media only screen and (max-width: 600px) {
+    /* styles to apply when the screen width is less than 600px */
+    body {
+      font-size: 12px;
+    }
+    table {
+      width: 50%; /* reduce the width of the table */
+    }
+  }
+    
+
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    /* display: flex;
-    justify-content: center; 
-    align-items: center; */
+    background-color: #0d1116;
+    color: white;
     height: 100vh;
 }
 
-/* .box {
-    width: 500px;
-    padding: 20px;
-    border: 1px solid #ccc;
-  } */
-
-/* .container {
-    max-width: 600px;
-    margin: auto;
-    padding: 20px;
-    background-color: white;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}  */
 
 h1 {
     text-align: center;
@@ -29,35 +25,50 @@ h1 {
 table {
     width: 100%;
     border-collapse: collapse;
+    /* border-collapse: separate;  */
 }
 
 th, td {
     text-align: left;
-    padding: 8px;
+    padding: 18px;
+    width: 200px; /* increase the width of the cells */
 }
 
-tr:nth-child(even) {
-    background-color: #e4e4e4;
+  
+th {
+    background-color: #5686f5; 
+    /* #161b22 */
+    color: white;
+}
+
+tr {
+    border: 1px black;
 }
 
 tr:hover {
-    background-color: #ddd;
+    background-color: #242a31 !important;
+    border: 1px solid #e9e9e9;
 }
 
-th {
-    background-color: #4CAF50;
-    color: white;
+
+
+
+tr:nth-child(even) {
+    background-color: #191e27;
+    /* border: 1px solid white; */
 }
+
+
+
+
+
+
 
 form {
     display: inline-block;
 }
 
-button {
-    background-color: #4CAF50;
-    color: white;
-    padding: 8px 16px;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-} 
+  
+
+
+
