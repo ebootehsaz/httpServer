@@ -11,4 +11,5 @@ https://dev.mysql.com/doc/mysql-tutorial-excerpt/5.7/en/example-auto-increment.h
 
 <br>
 ### Preview
+Looks like this:
 ![alt text](/Users/ethan/Desktop/VSCode project manage/httpServer/page.png)
