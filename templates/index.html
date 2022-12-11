@@ -11,12 +11,12 @@
     <link rel="stylesheet" type="text/css" href="/static/style.css">
 </head>
 <body>
-    <h1>File Upload, List, Delete, and Download</h1>
+    <h1>HTTP server</h1> 
+    <h1>Upload, list and download files</h1>
 
-    
     <h2>Upload a file</h2>
 
-    <form action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ url_for('index') }}" method="POST" enctype="multipart/form-data" id="upload">
         <input type="file" name="file" id="file" />
         <input type="submit" value="Upload" />
     </form>
@@ -41,14 +41,22 @@
           {% for file in files %}
           <tr>
             <td>{{ file[0] }}</td>
-            <td>{{ file[1] }}</td>
+            
+            {% if file[1][:20] == file[1] %}
+                <td>{{ file[1][:20] }}</td>
+            {% endif %}
+
+            {% if not file[1][:20] == file[1] %}
+                <td>{{ file[1][:20] }}...</td>
+            {% endif %}
+
             <!-- <td>{{ file[2] }}</td>  provides size -->
             
             <td><a href="{{ url_for('download_file', filename=file[1]) }}">Download</a></td> 
             
             <!-- <td>
                 <a href="{{ url_for('download_file', filename=file[1]) }}">
-                    <img src="icon.png" alt="Download" width="42" height="32">
+                    <img src="/Users/ethan/Desktop/VSCode project manage/httpServer/icon.png" alt="Download" width="42" height="32">
                 </a>
             </td>  -->
             
@@ -57,8 +65,6 @@
                 <input type="hidden" name="fileid" value="{{ file[0] }}" />
 
                 <input type="submit" value="Delete" id="delete_button" />
-
-
 
               </form>
             </td>
@@ -78,9 +84,6 @@
         </form>
     {% endif %}
 
-    
-
-    
 
 </body>
 </html>
