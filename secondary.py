@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, send_file, redirect, url_for
+from flask import Flask, request, render_template, send_file, redirect, url_for, make_response
 from werkzeug.utils import secure_filename
 import os
 import sqlite3
@@ -88,19 +88,23 @@ def index():
         if "file" not in request.files:
             return "No file part"
 
-        file = request.files["file"]
+        # file = request.files["file"]
+        file = request.files.get("file")
 
         if file.filename == "":
             return "No selected file"
 
         if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename) # such a cool function
+            filename = secure_filename(file.filename)
 
             # Store file in uploads folder
-            file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            # file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            
+            #  file data/blob to store
+            file_data = file.read()
 
             # Store file information in database
-            conn = sqlite3.connect("files.db")
+            conn = sqlite3.connect("uploads.db")
             c = conn.cursor()
 
             # the AUTOINCREMENT property in the CREATE TABLE statement will automatically generate a unique, sequential ID for the record. 
@@ -108,7 +112,7 @@ def index():
             # https://dev.mysql.com/doc/mysql-tutorial-excerpt/5.7/en/example-auto-increment.html
 
             # cursor = c.execute("INSERT INTO files (id, name, size) VALUES (id INTEGER PRIMARY KEY AUTOINCREMENT, ?, ?)", (id, filename, os.path.getsize(os.path.join(UPLOAD_FOLDER, filename)))) 
-            cursor = c.execute("INSERT INTO files (name, size) VALUES (?, ?)", (filename, os.path.getsize(os.path.join(UPLOAD_FOLDER, filename)))) 
+            cursor = c.execute("INSERT INTO files (name, data) VALUES (?, ?)", (file.filename, file_data)) 
 
             conn.commit()
             conn.close()
@@ -123,10 +127,12 @@ def index():
 @app.route("/", methods=["GET"])
 def home():
         # Retrieve information about all files from database
-    conn = sqlite3.connect("files.db")
+    conn = sqlite3.connect("uploads.db")
     c = conn.cursor()
-    c.execute("CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, size INTEGER)") #AUTOINCREMENT
-    c.execute("SELECT * FROM files")
+    c.execute("CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, data BLOB)") #AUTOINCREMENT
+    # c.execute("SELECT * FROM files")
+    c.execute("SELECT id, name FROM files")
+
     files = c.fetchall()
     # print("num files:", files.__sizeof__())
     conn.close()
@@ -142,7 +148,7 @@ def delete_file():
     # print("Delete: ", fileID) debug
     
     # Delete file from database
-    conn = sqlite3.connect("files.db")
+    conn = sqlite3.connect("uploads.db")
     c = conn.cursor()
     filename = c.execute("SELECT name FROM files WHERE id = ?", (fileID,))
     # c.execute("DELETE FROM files WHERE name = ?", (filename,))
@@ -151,44 +157,43 @@ def delete_file():
     conn.commit()
     conn.close()
 
-    # remove file from server
-    delete(filename)
 
     # Redirect back to index page
     return redirect(url_for("home"))
 
-def delete(filename):
 
-    file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
-    if os.path.exists(file_path):
-        os.remove(file_path)
-        print("Successfully deleted: " + filename)
-    return redirect(url_for("index"))
 
 
 
 @app.route("/delete_all", methods=["POST"])
 def delete_all_file():
-    conn = sqlite3.connect("files.db")
+    conn = sqlite3.connect("uploads.db")
     c = conn.cursor()
     c.execute("DELETE FROM files")
     conn.commit()
     conn.close()
 
-    os.remove("UPLOAD_FOLDER")
-
     return redirect(url_for("index"))
 
 
-@app.route("/download/<filename>")
+@app.route("/download/<filename>", methods=["GET"])
 def download_file(filename):
-    if DEBUG: print("/download ")
-    # Check if file exists
-    if os.path.isfile(os.path.join(UPLOAD_FOLDER, filename)):
-        # Send file as response
-        return send_file(os.path.join(UPLOAD_FOLDER, filename))
+    # connect
+    conn = sqlite3.connect("uploads.db")
+    cursor = conn.cursor()
+    # Get the file data from the database
+    cursor.execute("SELECT data FROM files WHERE name=?", (filename,))
+    file_data = cursor.fetchone()[0]
 
-    return "Error 404 FILE NOT FOUND"
+    # Send the file data to the client as a response
+    response = make_response(file_data)
+    response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+    return response
+
+
+
+
+
 
 
 if __name__ == "__main__":
@@ -201,6 +206,14 @@ if __name__ == "__main__":
     #function may return the loopback address (127.0.0.1) 
     # if your device is not connected to a network. 
     # In this case, you will not be able to use this IP address to make your program accessible to other devices on the local network.
+
+    # ip_address = '0.0.0.0' # override
+
+    # Get custom word
+    # word = "app"
+
+    # Get IP address
+    # ip_address = socket.gethostbyname(word)
 
     # print("Hostname:", hostname)
 

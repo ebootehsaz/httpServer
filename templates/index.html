@@ -50,7 +50,7 @@
                 <td>{{ file[1][:20] }}...</td>
             {% endif %}
 
-            <!-- <td>{{ file[2] }}</td>  provides size -->
+            <!-- <td>{{ file[2] }}</td>  provides size ... or blob? -->
             
             <td><a href="{{ url_for('download_file', filename=file[1]) }}">Download</a></td> 
             
