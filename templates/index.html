@@ -47,7 +47,7 @@
             {% endif %}
 
             {% if not file[1][:20] == file[1] %}
-                <td>{{ file[1][:20] }}...</td>
+                <td>{{ file[1][:10] }}...{{ file[1][-10:] }}</td>
             {% endif %}
 
             <!-- <td>{{ file[2] }}</td>  provides size ... or blob? -->
@@ -63,6 +63,7 @@
             <td>
               <form action="{{ url_for('delete_file') }}" method="POST">
                 <input type="hidden" name="fileid" value="{{ file[0] }}" />
+                <input type="hidden" name="filename" value="{{ file[1] }}" />
 
                 <input type="submit" value="Delete" id="delete_button" />
 

@@ -6,80 +6,14 @@ import socket
 # import mimetypes
 from werkzeug.datastructures import FileStorage
 import re
+from filesecurity import allowed_file
 
 UPLOAD_FOLDER = "./uploads"
-ALLOWED_EXTENSIONS = {"txt", "pdf", "png", "jpg", "jpeg"}
-
-HASH_ALGORITHM = "sha256"
-MAX_FILE_SIZE = 10 * 1024 * 1024 # 10MB
 
 app = Flask(__name__)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
-# FILE_NAME_PATTERN = r"[a-zA-Z0-9_\.-]+" 
-FILE_NAME_PATTERN = r"[a-zA-Z0-9_\.-\s]+"
-
-DEBUG = 1
-
-
-
-def allowed_file(filename):
-
-    # Check if the file extension is in the whitelist
-    if not "." in filename or filename.rsplit(".", 1)[1].lower() not in ALLOWED_EXTENSIONS:
-        if DEBUG: print("file extension is not in the whitelist")
-        return False
-
-    # Check if the file's MIME type matches the file extension
-    file = request.files.get("file")
-    if not isinstance(file, FileStorage):
-        if DEBUG: print("not isinstance(file, FileStorage)")
-        return False
-    # if not file.mimetype.startswith(file.filename.rsplit(".", 1)[1].lower() + "/"):
-    #     if DEBUG: print("mimetype lie")
-    #     return False
-
-    # Check if the file path is within the UPLOAD_FOLDER directory and return False if it is not
-    # file_path = os.path.join(UPLOAD_FOLDER, filename)
-    # if not os.path.realpath(file_path).startswith(UPLOAD_FOLDER):
-    #     if DEBUG: print("attempted to move directory")
-    #     return False
-
-    # both of the above are broken
-
-    # if file.size > MAX_FILE_SIZE:
-    #     if DEBUG: print("File too big")
-    #     return False
-
-    # if not re.match(FILE_NAME_PATTERN, filename): # prevent stuff like ..
-    #     if DEBUG: print("illegeal pattern detected in name")
-    #     return False
-
-
-    # if hasattr(file, "check_hash"):
-    #     # can use sha256
-    #     if not file.check_hash(HASH_ALGORITHM, file.filename):
-    #         if DEBUG: print("checksum error")
-    #         return False
-
-    # # perform these checks on the server side, rather than the client side, to prevent malicious users from bypassing the checks.
-    # if file.scan_for_virus() or file.scan_for_security_vulnerabilities():
-    #     if DEBUG: print("virus detected error")
-    #     return False
-
-    # If the file passes all checks, it is allowed
-    return True
-
-
-    
-
-# def allowed_file(filename):
-#     # Get the MIME type of the file
-#     file_mimetype = mimetypes.guess_type(filename)[0]
-#     print("File MIME type: ", file_mimetype)
-
-#     # Check if the MIME type is in the whitelist
-#     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS and file_mimetype in ALLOWED_MIMETYPES
+DEBUG = 0
 
 @app.route("/uploads", methods=["GET", "POST"])
 def index():
@@ -112,14 +46,15 @@ def index():
             # https://dev.mysql.com/doc/mysql-tutorial-excerpt/5.7/en/example-auto-increment.html
 
             # cursor = c.execute("INSERT INTO files (id, name, size) VALUES (id INTEGER PRIMARY KEY AUTOINCREMENT, ?, ?)", (id, filename, os.path.getsize(os.path.join(UPLOAD_FOLDER, filename)))) 
-            cursor = c.execute("INSERT INTO files (name, data) VALUES (?, ?)", (file.filename, file_data)) 
+            # cursor = c.execute("INSERT INTO files (name, data) VALUES (?, ?)", (file.filename, file_data)) 
+            cursor = c.execute("INSERT INTO files (name, data) VALUES (?, ?)", (filename, file_data)) 
 
             conn.commit()
             conn.close()
 
             return redirect(url_for("home"))
 
-        return "Invalid file"
+        return "FILE NOT ALLOWED"
     # else get
 
     return redirect(url_for("home"))
@@ -150,7 +85,7 @@ def delete_file():
     # Delete file from database
     conn = sqlite3.connect("uploads.db")
     c = conn.cursor()
-    filename = c.execute("SELECT name FROM files WHERE id = ?", (fileID,))
+    # filename = c.execute("SELECT name FROM files WHERE id = ?", (fileID,))
     # c.execute("DELETE FROM files WHERE name = ?", (filename,))
     c.execute("DELETE FROM files WHERE id = ?", (fileID,))
 
@@ -160,8 +95,6 @@ def delete_file():
 
     # Redirect back to index page
     return redirect(url_for("home"))
-
-
 
 
 
@@ -189,9 +122,6 @@ def download_file(filename):
     response = make_response(file_data)
     response.headers["Content-Disposition"] = f"attachment; filename={filename}"
     return response
-
-
-
 
 
 
