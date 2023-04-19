@@ -31,7 +31,6 @@ def index():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
 
-            # Store file in uploads folder
             # file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
             
             #  file data/blob to store
@@ -61,7 +60,7 @@ def index():
 
 @app.route("/", methods=["GET"])
 def home():
-        # Retrieve information about all files from database
+    # Retrieve
     conn = sqlite3.connect("uploads.db")
     c = conn.cursor()
     c.execute("CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, data BLOB)") #AUTOINCREMENT
@@ -72,7 +71,6 @@ def home():
     # print("num files:", files.__sizeof__())
     conn.close()
 
-    # Render index.html template, passing the list of files as a variable
     return render_template("index.html", files=files)
 
 
@@ -111,10 +109,9 @@ def delete_all_file():
 
 @app.route("/download/<filename>", methods=["GET"])
 def download_file(filename):
-    # connect
     conn = sqlite3.connect("uploads.db")
     cursor = conn.cursor()
-    # Get the file data from the database
+
     cursor.execute("SELECT data FROM files WHERE name=?", (filename,))
     file_data = cursor.fetchone()[0]
 

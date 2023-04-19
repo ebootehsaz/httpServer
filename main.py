@@ -36,10 +36,8 @@ def index():
             if not os.path.exists(app.config["UPLOAD_FOLDER"]):
                 os.makedirs(app.config["UPLOAD_FOLDER"])
         
-            # Store file in uploads folder
             file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
 
-            # Store file information in database
             conn = sqlite3.connect("files.db")
             c = conn.cursor()
 
@@ -62,7 +60,6 @@ def index():
 
 @app.route("/", methods=["GET"])
 def home():
-        # Retrieve information about all files from database
     conn = sqlite3.connect("files.db")
     c = conn.cursor()
     c.execute("CREATE TABLE IF NOT EXISTS files (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, size INTEGER)") #AUTOINCREMENT
@@ -77,12 +74,10 @@ def home():
 
 @app.route("/delete", methods=["POST"])
 def delete_file():
-    # Get filename from form data
     fileID = request.form.get("fileid")
     filename = request.form.get("filename")
     # print("Delete: ", fileID) debug
     
-    # Delete file from database
     conn = sqlite3.connect("files.db")
     c = conn.cursor()
     # filename = c.execute("SELECT name FROM files WHERE id = ?", (fileID,))
@@ -96,11 +91,9 @@ def delete_file():
     # remove file from server
     delete(filename)
 
-    # Redirect back to index page
     return redirect(url_for("home"))
 
 def delete(filename):
-
     file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
     if os.path.exists(file_path):
         os.remove(file_path)
